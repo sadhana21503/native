@@ -1,0 +1,600 @@
+> setup and installation 
+npm install -g react-native-cli
+npx react-native init MyApp --template react-native-template-typescript
+
+
+
+
+>Core components
+View
+A container that supports layout with Flexbox, styling, and handling touch events.
+
+Text
+Displays text with support for nesting, styling, and touch handling.
+
+Image
+Displays images from various sources like the web, local files, or inline.
+
+TextInput
+Allows users to input text, with support for focus, events, and styling.
+
+Button
+A simple button component that responds to touches.
+
+ScrollView
+A generic scrolling container for child components, ideal for layouts that need scrolling.
+
+FlatList
+A performant, scrollable list of items, especially for large data sets. It only renders visible items.
+
+SectionList
+Similar to FlatList, but for lists where data is grouped into sections.
+
+TouchableOpacity
+A wrapper that detects touch events with feedback like opacity changes.
+
+SafeAreaView
+A special view that adjusts its layout to avoid areas like the status bar and the notch on newer devices.
+
+ActivityIndicator
+A loading spinner for indicating ongoing activity.
+
+Modal
+A component for creating an overlay window, often used for dialogs or prompts.
+
+Switch
+A toggle switch component for binary choices (on/off).
+
+StatusBar
+Configures the status bar of the device (e.g., color, visibility).
+
+Picker (Deprecated in favor of react-native-picker-select)
+A dropdown list for selecting items.
+
+Pressable
+A more advanced touchable component that allows control over different press states (introduced in React Native 0.63).
+
+KeyboardAvoidingView
+A container that automatically adjusts its layout to prevent the keyboard from covering inputs.
+
+RefreshControl
+A pull-to-refresh functionality for ScrollView components.
+
+
+
+
+
+>Data Types 
+1.Primitive Types
+number
+let age: number = 25;
+
+string
+let name: string = 'John Doe';
+
+boolean
+let isActive: boolean = true;
+
+null
+let emptyValue: null = null;
+
+undefined
+let notDefined: undefined = undefined;
+
+symbol
+let uniqueKey: symbol = Symbol('key');
+
+bigint
+let largeNumber: bigint = 9007199254740991n;
+
+
+
+2. Object Types
+Object
+let person: Object = { name: 'John', age: 30 };
+
+Array
+let numbers: number[] = [1, 2, 3, 4];
+let names: Array<string> = ['Alice', 'Bob'];
+
+Tuple
+let tuple: [string, number] = ['Alice', 25];
+
+enum
+enum Color {
+  Red,
+  Green,
+  Blue
+}
+let backgroundColor: Color = Color.Green;
+
+
+3. Function Types
+Function
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+Arrow Functions
+const multiply = (x: number, y: number): number => x * y;
+
+
+4. Union and Intersection Types
+Union (|)
+let value: string | number;
+value = 'Hello'; // OK
+value = 42;      // OK
+
+
+Intersection (&)
+interface Person {
+  name: string;
+}
+interface Employee {
+  employeeId: number;
+}
+let worker: Person & Employee = { name: 'John', employeeId: 123 };
+
+
+5. Any Type
+any
+let unknownValue: any = 'Hello';
+unknownValue = 42;
+
+
+6. Void Type
+void
+function logMessage(message: string): void {
+  console.log(message);
+}
+
+
+7. Never Type
+never
+function throwError(errorMessage: string): never {
+  throw new Error(errorMessage);
+}
+
+
+8. Unknown Type
+unknown
+let input: unknown;
+input = 'Hello'; // OK
+if (typeof input === 'string') {
+  console.log(input.toUpperCase()); // Type safe!
+}
+
+
+9. Literal Types
+Literal Types
+let direction: 'left' | 'right';
+direction = 'left'; // OK
+
+
+10. Type Aliases
+Type Alias
+type ID = number | string;
+let userId: ID;
+userId = 123;    // OK
+userId = 'abc';  // OK
+
+
+
+
+
+
+>Basic Sturcture
+import React from 'react';
+import { Text, View, StyleSheet } from 'react-native';
+
+>Define the Props interface for typing props
+interface Props {
+  name: string;
+  age?: number; // age is optional
+}
+
+>Define the component with typed props
+const Greeting: React.FC<Props> = ({ name, age }) => {
+  return (
+    <View style={styles.container}>
+      <Text>Hello, {name}!</Text>
+      {age && <Text>You are {age} years old.</Text>}
+    </View>
+  );
+};
+
+> App component using Greeting component
+const App: React.FC = () => {
+  return <Greeting name="John" age={30} />;
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+export default App;
+
+
+
+
+
+
+>Typing in State and Props
+const Counter: React.FC = () => {
+  const [count, setCount] = useState<number>(0);
+
+  return (
+    <View>
+      <Text>Count: {count}</Text>
+      <Button title="Increment" onPress={() => setCount(count + 1)} />
+    </View>
+  );
+};
+
+
+
+
+
+> Props and Default Props
+interface WelcomeProps {
+  name: string;
+  greeting?: string;
+}
+
+const Welcome: React.FC<WelcomeProps> = ({ name, greeting = "Hello" }) => {
+  return <Text>{greeting}, {name}!</Text>;
+};
+
+export default Welcome;
+
+
+
+
+
+
+>stack Navigator
+npm install @react-navigation/native @react-navigation/stack
+npm install react-native-screens react-native-safe-area-context
+npm install @react-navigation/native-stack
+
+
+// App.tsx
+
+import React from 'react';
+import { Button, View, Text } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+// Define the types for the stack navigator
+type RootStackParamList = {
+  Home: undefined;
+  Details: { itemId: number; otherParam?: string }; // The route params for Details screen
+};
+
+// Create the stack navigator
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+// Home Screen Component
+const HomeScreen = ({ navigation }: { navigation: any }) => {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Home Screen</Text>
+      <Button
+        title="Go to Details"
+        onPress={() => navigation.navigate('Details', { itemId: 42 })}
+      />
+    </View>
+  );
+};
+
+// Details Screen Component
+const DetailsScreen = ({ route }: { route: any }) => {
+  const { itemId, otherParam } = route.params;
+
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Details Screen</Text>
+      <Text>Item ID: {itemId}</Text>
+      {otherParam && <Text>Other Param: {otherParam}</Text>}
+    </View>
+  );
+};
+
+// Main App Component with Navigation
+const App: React.FC = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default App;
+
+
+
+
+
+
+>Navigate to another screen:
+navigation.navigate('ScreenName', { params });
+
+>Go back to the previous screen
+navigation.goBack();
+
+>Replace the current screen with a new one 
+(removes current screen from stack)
+navigation.replace('ScreenName');
+
+Push a new screen onto the stack 
+(similar to navigate, but always adds to the stack even if the screen is already on top)
+navigation.push('ScreenName', { params });
+
+Pop (remove) the current screen from the stack:
+navigation.pop();
+
+
+
+
+
+
+>Stack.screen
+<Stack.Screen 
+  name="Details" 
+  component={DetailsScreen} 
+  options={{ title: 'My Custom Title' }} 
+/>
+
+
+
+
+
+
+
+>Props
+//Basic parent usin child
+import React from 'react';
+import { View } from 'react-native';
+import ChildComponent from './ChildComponent';
+
+const ParentComponent = () => {
+  return (
+    <View>
+      {/* Passing props to ChildComponent */}
+      <ChildComponent title="Hello, TypeScript!" count={5} />
+    </View>
+  );
+};
+
+
+// ChildComponent.tsx
+import React from 'react';
+import { View, Text } from 'react-native';
+// Defining the props type
+interface ChildProps {
+  title: string;
+  count: number;
+}
+const ChildComponent: React.FC<ChildProps> = ({ title, count }) => {
+  return (
+    <View>
+      <Text>{title}</Text>
+      <Text>{`Count: ${count}`}</Text>
+    </View>
+  );
+};
+
+export default ChildComponent;
+
+
+
+>Defining a prop
+interface ChildProps {
+  title: string;
+  count: number;
+}
+type ChildProps = {
+  title: string;
+  count: number;
+};
+
+>Optional prop usage
+interface ChildProps {
+  title: string;
+  count?: number; // This prop is optional
+}
+
+const ChildComponent: React.FC<ChildProps> = ({ title, count = 0 }) => {
+  return (
+    <View>
+      <Text>{title}</Text>
+      <Text>{`Count: ${count}`}</Text>
+    </View>
+  );
+};
+
+
+
+>Default prop usage
+// ChildComponent.tsx
+
+interface ChildProps {
+  title: string;
+  count?: number;
+}
+
+const ChildComponent: React.FC<ChildProps> = ({ title, count = 0 }) => {
+  return (
+    <View>
+      <Text>{title}</Text>
+      <Text>{`Count: ${count}`}</Text>
+    </View>
+  );
+};
+
+export default ChildComponent;
+
+
+
+>Passing Function as Props
+// ParentComponent.tsx
+
+import React from 'react';
+import { View } from 'react-native';
+import ChildComponent from './ChildComponent';
+
+const ParentComponent = () => {
+  const handlePress = () => {
+    console.log('Button was pressed!');
+  };
+
+  return (
+    <View>
+      {/* Passing a function as a prop */}
+      <ChildComponent title="Hello" onPress={handlePress} />
+    </View>
+  );
+};
+
+export default ParentComponent;
+
+
+
+
+
+
+
+
+>useState Hook
+const [state, setState] = useState(initialState);
+
+
+//usage 
+import React, { useState } from 'react';
+import { View, Text, Button } from 'react-native';
+
+const Counter = () => {
+  // Declaring a state variable 'count' and initializing it to 0
+  const [count, setCount] = useState(0);
+
+  return (
+    <View>
+      <Text>Count: {count}</Text>
+      {/* Updating the state using setCount */}
+      <Button title="Increase Count" onPress={() => setCount(count + 1)} />
+    </View>
+  );
+};
+
+export default Counter;
+
+
+
+
+
+
+
+
+
+
+>UseRef Hook
+const refContainer = useRef(initialValue);
+ //usage
+ import React, { useRef } from 'react';
+import { View, Text, Button } from 'react-native';
+
+const Timer = () => {
+  // Create a ref to store the current value of the timer
+  const timerRef = useRef<number | null>(null);
+
+  const startTimer = () => {
+    // Set a timer and store the reference to the timer ID
+    timerRef.current = setInterval(() => {
+      console.log('Timer is running...');
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    // Clear the interval using the ref
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null; // Reset the ref after stopping the timer
+    }
+  };
+
+  return (
+    <View>
+      <Button title="Start Timer" onPress={startTimer} />
+      <Button title="Stop Timer" onPress={stopTimer} />
+    </View>
+  );
+};
+
+export default Timer;
+
+
+
+
+
+
+
+
+
+Key Differences Between useState and useRef
+useState: Triggers re-rendering of the component when the state is updated.
+useRef: Does not trigger re-rendering when the value is updated.
+ It’s often used to reference DOM elements or store values between renders.
+
+
+
+Usage in Forms: useState is typically used for controlled components where the value changes with user input, 
+while useRef is often used for uncontrolled components or accessing DOM elements directly.
+
+
+
+>Both useState and UseRef togethere
+//Usageimport React, { useState, useRef } from 'react';
+import { View, Text, TextInput, Button } from 'react-native';
+
+const FormComponent = () => {
+  // useState for form input state
+  const [name, setName] = useState('');
+  
+  // useRef to focus on the TextInput
+  const inputRef = useRef<TextInput>(null);
+
+  const handleFocus = () => {
+    // Access the TextInput's focus method using the ref
+    inputRef.current?.focus();
+  };
+
+  return (
+    <View>
+      <Text>Name: {name}</Text>
+      <TextInput
+        ref={inputRef} // Assigning the ref to the TextInput
+        value={name}
+        onChangeText={setName}
+        style={{ borderWidth: 1, padding: 10, margin: 10 }}
+      />
+      <Button title="Focus on Input" onPress={handleFocus} />
+    </View>
+  );
+};
+
+export default FormComponent;
+
+useState is used to manage the text input's state.
+useRef is used to directly reference the TextInput component and call its focus method when the button is pressed.
+
+
+
+
+
